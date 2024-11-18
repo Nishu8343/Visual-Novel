@@ -1,0 +1,72 @@
+﻿I'm sorry, but errors were detected in your script. Please correct the
+errors listed below, and try again.
+
+
+The label start is defined twice, at File "game/Game Scripts/Intro.rpy", line 4:
+label start:
+and File "game/Game Scripts/class.rpy", line 5:
+label start:
+
+
+The label start is defined twice, at File "game/Game Scripts/class.rpy", line 5:
+label start:
+and File "game/script.rpy", line 7:
+label start:
+
+
+The label class_a_challenge is defined twice, at File "game/Game Scripts/class.rpy", line 18:
+label class_a_challenge:
+and File "game/script.rpy", line 20:
+label class_a_challenge:
+
+
+The label class_b_challenge is defined twice, at File "game/Game Scripts/class.rpy", line 28:
+label class_b_challenge:
+and File "game/script.rpy", line 30:
+label class_b_challenge:
+
+
+The label class_c_challenge is defined twice, at File "game/Game Scripts/class.rpy", line 37:
+label class_c_challenge:
+and File "game/script.rpy", line 39:
+label class_c_challenge:
+
+
+The label class_a is defined twice, at File "game/Game Scripts/class.rpy", line 46:
+label class_a:
+and File "game/script.rpy", line 48:
+label class_a:
+
+
+The label class_b is defined twice, at File "game/Game Scripts/class.rpy", line 59:
+label class_b:
+and File "game/script.rpy", line 61:
+label class_b:
+
+
+The label class_a_correct is defined twice, at File "game/Game Scripts/class.rpy", line 74:
+label class_a_correct:
+and File "game/script.rpy", line 76:
+label class_a_correct:
+
+
+The label class_a_incorrect is defined twice, at File "game/Game Scripts/class.rpy", line 79:
+label class_a_incorrect:
+and File "game/script.rpy", line 81:
+label class_a_incorrect:
+
+
+The label class_b_correct is defined twice, at File "game/Game Scripts/class.rpy", line 86:
+label class_b_correct:
+and File "game/script.rpy", line 88:
+label class_b_correct:
+
+
+The label class_b_incorrect is defined twice, at File "game/Game Scripts/class.rpy", line 90:
+label class_b_incorrect:
+and File "game/script.rpy", line 92:
+label class_b_incorrect:
+
+
+Ren'Py Version: Ren'Py 8.3.2.24090902
+Sun Nov 17 18:56:34 2024

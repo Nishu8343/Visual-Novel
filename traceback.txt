@@ -1,0 +1,22 @@
+﻿I'm sorry, but an uncaught exception occurred.
+
+While running game code:
+  File "game/script.rpy", line 65, in script
+    jump class_c
+ScriptError: could not find label 'class_c'.
+
+-- Full Traceback ------------------------------------------------------------
+
+Full traceback:
+  File "game/script.rpy", line 65, in script
+    jump class_c
+  File "/Volumes/renpy-8.3.2-sdk/renpy-8.3.2-sdk/renpy/ast.py", line 1699, in execute
+    rv = renpy.game.script.lookup(target)
+  File "/Volumes/renpy-8.3.2-sdk/renpy-8.3.2-sdk/renpy/script.py", line 1103, in lookup
+    raise ScriptError("could not find label '%s'." % str(original))
+ScriptError: could not find label 'class_c'.
+
+macOS-14.6.1-arm64-arm-64bit arm64
+Ren'Py 8.3.2.24090902
+Subnetting 1.0
+Sun Nov 17 16:31:49 2024

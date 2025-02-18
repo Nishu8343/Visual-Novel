@@ -220,7 +220,7 @@ style choice_button_text is button_text
 style choice_vbox:
     xalign 0.5
     ypos 405
-    yanchor 0.5
+    yanchor 0.1
 
     spacing gui.choice_spacing
 
@@ -524,6 +524,7 @@ style game_menu_side:
 style game_menu_label:
     xpos 75
     ysize 180
+
 
 style game_menu_label_text:
     size gui.title_text_size
@@ -1610,3 +1611,34 @@ style slider_vbox:
 style slider_slider:
     variant "small"
     xsize 900
+
+
+
+
+define boss_monitor_explanation = Character(
+    None,
+    what_style="monitor_text",
+
+    # No behind-the-text box:
+    window_background=None,
+
+    # Position it so it lines up with your monitor:
+    window_xpos=0.5,     # center horizontally
+    window_ypos=0.21,     # 40% from top (tweak to match your monitor)
+    window_xanchor=0.5,
+    window_yanchor=0.0,
+
+    # If you want the text itself centered in the allowed space:
+    what_xalign=0.5
+)
+
+
+init python:
+    style.monitor_text = Style(style.default)
+    style.monitor_text.size = 27       # Tweak as needed
+    style.monitor_text.color = "#FFFFFF"
+    style.monitor_text.xmaximum = 1500    # Limit text width to 600px (adjust as needed)
+    style.monitor_text.outlines = [(1, "#000000", 0, 0)]  # Optional text outline
+    style.monitor_text.line_spacing = 7
+
+# Then in script:

@@ -2,8 +2,10 @@
 errors listed below, and try again.
 
 
-File "game/screens.rpy", line 1643: invalid syntax
-    style.monitor_text.padding =
+File "game/Game Scripts/A.rpy", line 596: end of line expected.
+    hide ip\
+        menu:
+             ^
 
 Ren'Py Version: Ren'Py 8.3.2.24090902
-Mon Feb 17 16:19:33 2025
+Mon Mar 10 17:00:19 2025

@@ -4,6 +4,7 @@
 define Boss = Character("Boss", color="#A9A9A9")
 define boss = Boss
 define player = Character("Player", color="#898361")
+define postText =Position(xpos = 500, xanchor = 0, ypos=320, yanchor=1)
 
 # ===================================================
 # Class B Challenge Flow
@@ -12,12 +13,12 @@ define player = Character("Player", color="#898361")
 label class_b_challenge:
     scene com with fade
     player "What! One Computer in this big room? Let me know what is this."
-    call class_b
+    call class_b from _call_class_b
     return
 
 label class_b:
     scene com2
-    show text "Question: What is the IP range for a Class B network?"
+    show text "Question: What is the IP range for a Class B network?" at postText
     menu:
         "128-191":
             $ answer = True
@@ -28,12 +29,12 @@ label class_b:
 
 label class_b_correct:
     boss "That's correct! Class B networks typically go from 128.x.x.x up to 191.x.x.x."
-    call after_class_b
+    call after_class_b from _call_after_class_b
     return
 
 label class_b_incorrect:
     boss "Not quite. Class B networks start at 128.x.x.x and go up to 191.x.x.x."
-    call class_b
+    call class_b from _call_class_b_1
     return
 
 label after_class_b:
@@ -41,7 +42,7 @@ label after_class_b:
     boss "Well done, Player. Now, let's dive into subnetting for Class B. I will give you an IP address, and you'll answer several questions about it."
 
     boss "Alright, let's proceed with the challenge."
-    call question_b
+    call question_b from _call_question_b
 
     return
 
@@ -114,18 +115,19 @@ label get_new_ip_b:
     $ ip_address_b = generate_ip_b()
     $ (net_addr_b, first_usable_b, last_usable_b, broadcast_b, subnet_mask_b, block_size_b) = compute_network_info_b(ip_address_b)
     scene com2 with fade
-    show text "Your task is to analyze the IP address: [ip_address_b]."
+    show text "Your task is to analyze the IP address: [ip_address_b]." as iptext
+    play sound "part2.mp3" loop
     pause
     return
 
 label question_b:
-    call get_new_ip_b
-    call question1_b
-    call question2_b
-    call question3_b
-    call question4_b
-    call question5_b
-    call question6_b
+    call get_new_ip_b from _call_get_new_ip_b
+    call question1_b from _call_question1_b
+    call question2_b from _call_question2_b
+    call question3_b from _call_question3_b
+    call question4_b from _call_question4_b
+    call question5_b from _call_question5_b
+    call question6_b from _call_question6_b
 
     scene boss character1
     boss "Fantastic work, Player! You have mastered the realm of Class B subnetting."
@@ -146,7 +148,7 @@ label question1_b:
     if answer == first_usable_b:
         boss "Correct! The first assignable IP address is [first_usable_b]."
     else:
-        boss "Not quite. The first usable IP is generally the network address + 1 (for /30 or larger subnets)."
+        boss "Not quite. The first usable IP is generally the network address + 1 "
         jump question1_b_retry
 
     return
@@ -156,7 +158,7 @@ label question1_b_retry:
     if attempt1_b > 3:
         jump question1_b_explanation
 
-    call get_new_ip_b
+    call get_new_ip_b from _call_get_new_ip_b_1
 
     $ answer = renpy.input("What is the First Assignable IP for THIS NEW Class B Network?")
     $ answer = answer.strip()
@@ -170,10 +172,32 @@ label question1_b_retry:
     return
 
 label question1_b_explanation:
-    boss "You've used all 3 attempts. Would you like to see the explanation or retry?"
+    boss "You've used all 3 attempts."
+    boss "Correct Answer: The first usable IP address is [first_usable_b]."
+    hide iptext
     menu:
         "Check Explanation":
-            boss "The first usable IP is typically the network address + 1.\nThe correct answer was [first_usable_b]."
+            boss_monitor_explanation " Not quite. The first usable IP is always the Network IP address + 1. To find the Network IP address, remember:
+
+            \nStep 1: Identify the subnet block size using 2^(32 - CIDR).
+            \nStep 2: Locate the closest multiple of that block size (within the relevant octet(s)) without exceeding the given IP address.
+
+            \n
+            \nFor Example (Class B):
+            Given IP address: 172.16.5.130/21
+
+            \nStep 1: Block Size = 2^(32 - 21) = 2^11 = 2048
+            \nStep 2: For a /21 in a 172.16.x.x network, each subnet spans 2048 addresses. This corresponds to increments of 8 in the third octet:
+                \n     172.16.0.0      (covers 172.16.0.0 – 172.16.7.255)
+                \n     172.16.8.0      (covers 172.16.8.0 – 172.16.15.255)
+                \nSince 172.16.5.130 is between 172.16.0.0 and 172.16.7.255, the closest multiple not exceeding 172.16.5.130 is:
+                \nNetwork IP address = 172.16.0.0
+
+            \nStep 3: First usable IP = Network IP address + 1 = 172.16.0.1
+
+            \n
+            \nKeep this in mind for similar problems!"
+
             jump question1_b_explanation_extra
         "Retry the question again":
             $ attempt1_b = 1
@@ -210,7 +234,7 @@ label question2_b_retry:
     if attempt2_b > 3:
         jump question2_b_explanation
 
-    call get_new_ip_b
+    call get_new_ip_b from _call_get_new_ip_b_2
 
     $ answer = renpy.input("Now with this NEW IP, what's the Last Assignable IP?")
     $ answer = answer.strip()
@@ -224,10 +248,33 @@ label question2_b_retry:
     return
 
 label question2_b_explanation:
-    boss "You've used all 3 attempts. Would you like the explanation or a retry?"
+    boss "You've used all 3 attempts."
+    boss "Correct Answer: The Last usable IP address is [last_usable_b]."
+    hide iptext
+
     menu:
         "Check Explanation":
-            boss "For subnets smaller than /31, Last Usable = Broadcast - 1. The correct answer was [last_usable_b]."
+            boss_monitor_explanation " Not quite. The last usable (assignable) IP is always the Broadcast IP address - 1. To find the Broadcast IP address, remember:
+
+            \nStep 1: Identify the subnet block size using 2^(32 - CIDR).
+            \nStep 2: Locate the next subnet boundary (the next multiple of the block size) to find the Broadcast IP address (which is one IP before that boundary).
+
+            \n
+            \nFor Example (Class B):
+            Given IP address: 172.16.5.130/21
+
+            \nStep 1: Block Size = 2^(32 - 21) = 2^11 = 2048
+            \nStep 2: For a /21 in a 172.16.x.x network, each subnet covers 2048 addresses. This corresponds to increments of 8 in the third octet:
+                \n     172.16.0.0      (covers 172.16.0.0 – 172.16.7.255)
+                \n     172.16.8.0      (covers 172.16.8.0 – 172.16.15.255)
+                \nSince 172.16.5.130 is in the first range, the next subnet boundary is 172.16.8.0.
+                \nHence, Broadcast IP = (next subnet boundary) - 1 = 172.16.8.0 - 1 = 172.16.7.255
+
+            \nStep 3: Last assignable IP = Broadcast IP - 1 = 172.16.7.254
+
+            \n
+            \nKeep this in mind for similar problems!"
+
             jump question2_b_explanation_extra
         "Retry the question again":
             $ attempt2_b = 1
@@ -264,7 +311,7 @@ label question3_b_retry:
     if attempt3_b > 3:
         jump question3_b_explanation
 
-    call get_new_ip_b
+    call get_new_ip_b from _call_get_new_ip_b_3
 
     $ answer = renpy.input("For this NEW IP, what is the Broadcast Address?")
     $ answer = answer.strip()
@@ -278,10 +325,31 @@ label question3_b_retry:
     return
 
 label question3_b_explanation:
-    boss "You've used all 3 attempts. Would you like the explanation or retry?"
+    boss "You've used all 3 attempts."
+    boss "Correct Answer: The broadcast IP address is [broadcast_b]. "
+    hide iptext
+
     menu:
         "Check Explanation":
-            boss "The broadcast is the last IP in the subnet range. The correct was [broadcast_b]."
+            boss_monitor_explanation " Not quite. The Broadcast IP address is one less than the next subnet boundary. To find the Broadcast IP address, remember:
+
+            \nStep 1: Identify the subnet block size using 2^(32 - CIDR).
+            \nStep 2: Locate the next subnet boundary (the next multiple of the block size) to find the Broadcast IP (one IP before that boundary).
+
+            \n
+            \nFor Example (Class B):
+            Given IP address: 172.16.5.130/21
+
+            \nStep 1: Block Size = 2^(32 - 21) = 2^11 = 2048
+            \nStep 2: For a /21 in a 172.16.x.x network, each subnet spans 2048 addresses. This corresponds to increments of 8 in the third octet:
+                \n     172.16.0.0      (covers 172.16.0.0 – 172.16.7.255)
+                \n     172.16.8.0      (covers 172.16.8.0 – 172.16.15.255)
+                \nSince 172.16.5.130 is within the range 172.16.0.0 – 172.16.7.255, the next subnet boundary is 172.16.8.0.
+                \nHence, Broadcast IP = (next subnet boundary) - 1 = 172.16.8.0 - 1 = 172.16.7.255
+
+            \n
+            \nKeep this in mind for similar problems!"
+
             jump question3_b_explanation_extra
         "Retry the question again":
             $ attempt3_b = 1
@@ -318,7 +386,7 @@ label question4_b_retry:
     if attempt4_b > 3:
         jump question4_b_explanation
 
-    call get_new_ip_b
+    call get_new_ip_b from _call_get_new_ip_b_4
 
     $ answer = renpy.input("Again, what is the Default Subnet Mask for a Class B Network?")
     $ answer = answer.strip()
@@ -332,10 +400,12 @@ label question4_b_retry:
     return
 
 label question4_b_explanation:
-    boss "You've used all 3 attempts. Want an explanation or a retry?"
+    boss "You've used all 3 attempts."
+    boss "Correct! The default subnet mask for a Class B network is 255.255.0.0."
+    hide iptext
     menu:
         "Check Explanation":
-            boss "Class B's default mask is 255.255.0.0."
+            boss_monitor_explanation "The default subnet mask for a Class B is 255.255.0.0."
             jump question4_b_explanation_extra
         "Retry the question again":
             $ attempt4_b = 1
@@ -372,7 +442,7 @@ label question5_b_retry:
     if attempt5_b > 3:
         jump question5_b_explanation
 
-    call get_new_ip_b
+    call get_new_ip_b from _call_get_new_ip_b_5
 
     $ answer = renpy.input("For this NEW IP, what is the Subnet Address (Network ID)?")
     $ answer = answer.strip()
@@ -380,16 +450,36 @@ label question5_b_retry:
     if answer == net_addr_b:
         boss "That's right! The subnet (network) address is [net_addr_b]."
     else:
-        boss "Not quite. The subnet address is the base network address (host bits = 0)."
+        boss "Not quite. The subnet address is the base network address."
         jump question5_b_retry
 
     return
 
 label question5_b_explanation:
-    boss "You've used all 3 attempts. Explanation or retry?"
+    boss "You've used all 3 attempts."
+    boss"Correct Answer: The network IP address is [net_addr_b]."
+    hide iptext
     menu:
         "Check Explanation":
-            boss "To find the network ID, zero out all host bits. The correct was [net_addr_b]."
+            boss_monitor_explanation " Not quite. The Subnet (Network) IP address is the multiple of the block size that does not exceed the given IP. To find the Subnet (Network) IP address, remember:
+
+            \nStep 1: Identify the subnet block size using 2^(32 - CIDR).
+            \nStep 2: Locate the closest multiple of that block size (within the relevant octet(s)) without exceeding the given IP address.
+
+            \n
+            \nFor Example (Class B):
+            Given IP address: 172.16.5.130/21
+
+            \nStep 1: Block Size = 2^(32 - 21) = 2^11 = 2048
+            \nStep 2: For a /21 in a 172.16.x.x network, subnets span 2048 addresses. This corresponds to increments of 8 in the third octet:
+                \n     172.16.0.0      (covers 172.16.0.0 – 172.16.7.255)
+                \n     172.16.8.0      (covers 172.16.8.0 – 172.16.15.255)
+                \nSince 172.16.5.130 is between 172.16.0.0 and 172.16.7.255, the largest multiple of the block size that does not exceed 172.16.5.130 is:
+                \nSubnet (Network) IP address = 172.16.0.0
+
+            \n
+            \nKeep this in mind for similar problems!"
+
             jump question5_b_explanation_extra
         "Retry the question again":
             $ attempt5_b = 1
@@ -408,15 +498,16 @@ label question5_b_explanation_extra:
 # Question 6 (Class B): Network Address
 # ===================================================
 label question6_b:
+    call get_new_ip_b from _call_get_new_ip_b_6
     $ attempt6_b = 1
 
-    $ answer = renpy.input("What is the Network Address of this IP (Class B)?")
+    $ answer = renpy.input("What is the Subnet Mask of this IP Address?")
     $ answer = answer.strip()
 
-    if answer == net_addr_b:
-        boss "Excellent! The network address is [net_addr_b]."
+    if answer == subnet_mask_b:
+        boss "Excellent! The subnet mask is [subnet_mask_b]. It defines the network portion of the IP address."
     else:
-        boss "Incorrect. The network address is formed by zeroing out the host portion."
+        boss "Incorrect. The subnet mask determines which part of the IP address is the network and which is the host."
         jump question6_b_retry
 
     return
@@ -426,24 +517,48 @@ label question6_b_retry:
     if attempt6_b > 3:
         jump question6_b_explanation
 
-    call get_new_ip_b
+    call get_new_ip_b from _call_get_new_ip_b_7
 
-    $ answer = renpy.input("What is the Network Address of THIS new IP?")
+    $ answer = renpy.input("What is the Subnet Mask of THIS new IP?")
     $ answer = answer.strip()
 
-    if answer == net_addr_b:
-        boss "Excellent! The network address is [net_addr_b]."
+    if answer == subnet_mask_b:
+        boss "Excellent! The subnet mask is [subnet_mask_b]. It defines the network portion of the IP address."
     else:
-        boss "Incorrect. The network address is formed by zeroing out the host portion."
+        boss "Incorrect. The subnet mask determines which part of the IP address is the network and which is the host."
         jump question6_b_retry
 
     return
 
 label question6_b_explanation:
-    boss "You've used all 3 attempts. Explanation or retry?"
+    boss "You've used all 3 attempts."
+    boss "Correct Answer: The subnet mask for this IP was [subnet_mask_b]. "
+    hide iptext
     menu:
         "Check Explanation":
-            boss "The correct network address was [net_addr_b]."
+
+            boss_monitor_explanation "Not quite. The subnet mask defines the network portion of an IP
+
+            \nStep 1: Determine the CIDR notation.
+            \nStep 2: Identify the number of bits in the network portion (1s).
+            \nStep 3: Convert those bits into a dotted-decimal format.
+
+            \n\nFor Example: Given IP Address: 172.16.5.130/21
+
+            \nStep 1: CIDR = /21
+
+            \nStep 2: A /21 subnet mask has 21 bits set to 1, followed by 11 bits of 0s:
+            \n    11111111.11111111.11111000.00000000
+
+            \nStep 3: Convert to Decimal
+            \n    11111111 = 255
+            \n    11111111 = 255
+            \n    11111000 = 248
+            \n    00000000 = 0
+            \nSo, Subnet Mask = 255.255.248.0
+
+            \n\nKeep practicing these methods for Class B networks!"
+
             jump question6_b_explanation_extra
         "Retry the question again":
             $ attempt6_b = 1

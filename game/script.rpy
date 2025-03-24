@@ -2,7 +2,7 @@
 define player = Character("player", color="#FFD700")
 
 label start:
-
+play sound "part1.mp3" loop
     # scene the screen flicker effect
 
     # Boss speaks

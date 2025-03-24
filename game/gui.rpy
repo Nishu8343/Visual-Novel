@@ -216,7 +216,7 @@ define gui.choice_button_text_hover_color = "#ffffff"
 define gui.choice_button_text_insensitive_color = '#8888887f'
 
 define gui.choice_layout = "center"
-define gui.choice_screen_yalign = 100
+define gui.choice_screen_yalign = 300
 define gui.choice_screen_xanchor = 0.2
 define gui.choice_screen_yanchor = 0.2
 

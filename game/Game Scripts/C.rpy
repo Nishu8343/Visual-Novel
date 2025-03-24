@@ -4,6 +4,7 @@
 define Boss = Character("Boss", color="#A9A9A9")
 define boss = Boss
 define player = Character("Player", color="#898361")
+define postText =Position(xpos = 500, xanchor = 0, ypos=320, yanchor=1)
 
 
 
@@ -14,13 +15,13 @@ define player = Character("Player", color="#898361")
 label class_c_challenge:
     scene com with fade
     player "What! One Computer in this big room? Let me know what is this."
-    call class_c
+    call class_c from _call_class_c
     return
 
 
 label class_c:
     scene com2
-    show text "Question: What is the IP range for a Class C network?"
+    show text "Question: What is the IP range for a Class C network?" at postText
     menu:
         "192-223":
             $ answer = True
@@ -31,12 +32,12 @@ label class_c:
 
 label class_c_correct:
     boss "That's correct! Class C networks typically go from 192.x.x.x up to 223.x.x.x."
-    call after_class_c
+    call after_class_c from _call_after_class_c
     return
 
 label class_c_incorrect:
     boss "Not quite. Class C networks start at 192.x.x.x and go up to 223.x.x.x."
-    call class_c
+    call class_c from _call_class_c_1
     return
 
 label after_class_c:
@@ -45,7 +46,7 @@ label after_class_c:
 
 
     boss "Alright, let's proceed with the challenge."
-    call question_c
+    call question_c from _call_question_c
 
     return
 
@@ -146,6 +147,7 @@ label get_new_ip_c:
     # Show the user what the new IP is
     scene com2 with fade
     show text "Your task is to analyze the IP address: [ip_address_c]." as iptext
+    play sound "part2.mp3" loop
 
 
     pause
@@ -159,15 +161,13 @@ label get_new_ip_c:
 label question_c:
 
     # Let's generate a random Class C IP + CIDR for the first question
-    call get_new_ip_c
-
     # Now we ask the six questions in order
-    call question1_c
-    call question2_c
-    call question3_c
-    call question4_c
-    call question5_c
-    call question6_c
+    call question1_c from _call_question1_c
+    call question2_c from _call_question2_c
+    call question3_c from _call_question3_c
+    call question4_c from _call_question4_c
+    call question5_c from _call_question5_c
+    call question6_c from _call_question6_c
 
     scene boss character1
     boss "Outstanding, Player! You've conquered the complexities of Class C subnetting like a true networking warrior! Your skills shine bright in the digital battlefield."
@@ -180,7 +180,7 @@ label question_c:
 # Question 1: First Assignable IP
 # ===================================================
 label question1_c:
-    call get_new_ip_c
+    call get_new_ip_c from _call_get_new_ip_c
     $ attempt1_c = 1
 
     # The user sees the current IP from get_new_ip_c above
@@ -201,7 +201,7 @@ label question1_c_retry:
         jump question1_c_explanation
 
     # Generate a brand-new IP (and new correct answer!)
-    call get_new_ip_c
+    call get_new_ip_c from _call_get_new_ip_c_1
 
     $ answer = renpy.input("What is the First Assignable IP for THIS NEW Network?")
     $ answer = answer.strip()
@@ -215,8 +215,10 @@ label question1_c_retry:
     return
 
 label question1_c_explanation:
-    boss "You've used all 3 attempts. Would you like to see the explanation or retry the question?"
+    boss "You've used all 3 attempts."
+    boss "Correct Answer: The first usable IP address is [first_usable_c]."
     hide iptext
+
     menu:
         "Check Explanation":
 
@@ -238,7 +240,7 @@ label question1_c_explanation:
 
 
             \n
-            \n Correct Answer: The first usable IP here was [first_usable_c]. \nKeep this in mind for similar problems!"
+            \nKeep this in mind for similar problems!"
 
             jump question1_c_explanation_extra
         "Retry the question again":
@@ -259,7 +261,7 @@ label question1_c_explanation_extra:
 # Question 2: Last Assignable IP
 # ===================================================
 label question2_c:
-    call get_new_ip_c
+    call get_new_ip_c from _call_get_new_ip_c_2
     $ attempt2_c = 1
 
     $ answer = renpy.input("What is the Last Assignable IP  address in this Network?")
@@ -278,7 +280,7 @@ label question2_c_retry:
     if attempt2_c > 3:
         jump question2_c_explanation
 
-    call get_new_ip_c
+    call get_new_ip_c from _call_get_new_ip_c_3
 
     $ answer = renpy.input("Now with this NEW IP, what's the Last Assignable IP?")
     $ answer = answer.strip()
@@ -292,8 +294,15 @@ label question2_c_retry:
     return
 
 label question2_c_explanation:
-    boss "You've used all 3 attempts. Would you like to see the explanation or retry the question?"
+    boss "You've used all 3 attempts?"
+
+    boss "Correct Answer: The Last usable IP address is [last_usable_c]."
+
+
     hide iptext
+
+
+
     menu:
 
         "Check Explanation":
@@ -318,7 +327,7 @@ label question2_c_explanation:
         \nStep 3: Broadcast IP address = Network IP address + (Block Size - 1) = 192.168.1.128 + (64 - 1) = 192.168.1.191
         \nStep 4: Last Assignable IP = Broadcast IP address - 1 = 192.168.1.190
 
-        \n\nCorrect Answer: The last usable IP here was [last_usable_c]. \nKeep this method in mind for similar questions!"
+        \n\nKeep this method in mind for similar questions!"
             jump question2_c_explanation_extra
         "Retry the question again":
             $ attempt2_c = 0
@@ -336,7 +345,7 @@ label question2_c_explanation_extra:
 # Question 3: Broadcast IP address
 # ===================================================
 label question3_c:
-    call get_new_ip_c
+    call get_new_ip_c from _call_get_new_ip_c_4
     $ attempt3_c = 1
 
     $ answer = renpy.input("What is the Broadcast IP address for this Network?")
@@ -355,7 +364,7 @@ label question3_c_retry:
     if attempt3_c > 3:
         jump question3_c_explanation
 
-    call get_new_ip_c
+    call get_new_ip_c from _call_get_new_ip_c_5
 
     $ answer = renpy.input("For this NEW IP, what is the Broadcast IP address?")
     $ answer = answer.strip()
@@ -369,7 +378,10 @@ label question3_c_retry:
     return
 
 label question3_c_explanation:
-    boss "You've used all 3 attempts. Would you like to see the explanation or retry the question?"
+    boss "You've used all 3 attempts."
+
+    boss "Correct Answer: The broadcast IP address is [broadcast_c]. "
+
     hide iptext
     menu:
         "Check Explanation":
@@ -391,7 +403,7 @@ label question3_c_explanation:
             \nStep 3: Broadcast IP address = Network IP address + (Block Size - 1) = 192.168.1.128 + (64 - 1) = 192.168.1.191
 
 
-            \n\nCorrect Answer: The broadcast IP address here was [broadcast_c]. \nUse this method to solve similar questions!"
+            \n\nUse this method to solve similar questions!"
 
             jump question3_c_explanation_extra
         "Retry the question again":
@@ -410,7 +422,7 @@ label question3_c_explanation_extra:
 # Question 4: Default Subnet Mask
 # ===================================================
 label question4_c:
-    call get_new_ip_c
+    call get_new_ip_c from _call_get_new_ip_c_6
     $ attempt4_c = 1
 
     $ answer = renpy.input("What is the Default Subnet Mask for a Class C Network?")
@@ -430,7 +442,7 @@ label question4_c_retry:
         jump question4_c_explanation
 
     # For question 4, you might or might not want a new IP. We'll keep it consistent:
-    call get_new_ip_c
+    call get_new_ip_c from _call_get_new_ip_c_7
 
     $ answer = renpy.input("Again, what is the Default Subnet Mask for a Class C Network?")
     $ answer = answer.strip()
@@ -444,7 +456,8 @@ label question4_c_retry:
     return
 
 label question4_c_explanation:
-    boss "You've used all 3 attempts. Would you like to see the explanation or retry the question?"
+    boss "You've used all 3 attempts."
+    boss "Correct! The default subnet mask for a Class C network is 255.255.255.0."
     hide iptext
     menu:
         "Check Explanation":
@@ -467,7 +480,7 @@ label question4_c_explanation_extra:
 # Question 5: Subnet IP address
 # ===================================================
 label question5_c:
-    call get_new_ip_c
+    call get_new_ip_c from _call_get_new_ip_c_8
     $ attempt5_c = 1
 
     $ answer = renpy.input("What is the Subnet IP address (Network IP address) of this IP address?")
@@ -486,7 +499,7 @@ label question5_c_retry:
     if attempt5_c > 3:
         jump question5_c_explanation
 
-    call get_new_ip_c
+    call get_new_ip_c from _call_get_new_ip_c_9
 
     $ answer = renpy.input("For this NEW IP, what is the Subnet IP address (Network ID)?")
     $ answer = answer.strip()
@@ -500,7 +513,9 @@ label question5_c_retry:
     return
 
 label question5_c_explanation:
-    boss "You've used all 3 attempts. Would you like to see the explanation or retry the question?"
+    boss "You've used all 3 attempts."
+
+    boss"Correct Answer: The network IP address is [net_addr_c]."
     hide iptext
     menu:
         "Check Explanation":
@@ -522,7 +537,7 @@ label question5_c_explanation:
         \n     192.168.1.128 (Closest and does not exceed 192.168.1.130)
         \nSo, Network IP address = 192.168.1.128
 
-        \n\nCorrect Answer: The network IP address here was [net_addr_c]. \nKeep this method in mind for similar questions!"
+        \n \nKeep this method in mind for similar questions!"
             jump question5_c_explanation_extra
         "Retry the question again":
             $ attempt5_c = 1
@@ -540,7 +555,7 @@ label question5_c_explanation_extra:
 # Question 6: Subnet Mask
 # ===================================================
 label question6_c:
-    call get_new_ip_c
+    call get_new_ip_c from _call_get_new_ip_c_10
     $ attempt6_c = 1
 
     $ answer = renpy.input("What is the Subnet Mask of this IP Address?")
@@ -559,7 +574,7 @@ label question6_c_retry:
     if attempt6_c > 3:
         jump question6_c_explanation
 
-    call get_new_ip_c
+    call get_new_ip_c from _call_get_new_ip_c_11
 
     $ answer = renpy.input("What is the Subnet Mask of THIS new IP?")
     $ answer = answer.strip()
@@ -573,7 +588,8 @@ label question6_c_retry:
     return
 
 label question6_c_explanation:
-    boss "You've used all 3 attempts. Would you like to see the explanation or retry the question?"
+    boss "You've used all 3 attempts."
+    boss "Correct Answer: The subnet mask for this IP was [subnet_mask_c]. "
     hide iptext
     menu:
         "Check Explanation":
@@ -603,7 +619,7 @@ label question6_c_explanation:
             \nSo, Subnet Mask = 255.255.255.192
 
 
-            \nCorrect Answer: The subnet mask for this IP was [subnet_mask_c]. \nKeep practicing these methods for Class C networks!"
+            \n\nKeep practicing these methods for Class C networks!"
 
             jump question6_c_explanation_extra
         "Retry the question again":
